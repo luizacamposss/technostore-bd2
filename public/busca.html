@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Busca de Produtos</title>
+</head>
+<body>
+  <h1>Buscar Produto por Nome</h1>
+  <form id="formBusca">
+    <input type="text" id="nome" placeholder="Digite o nome do produto" required>
+    <button type="submit">Buscar</button>
+  </form>
+
+  <table id="tabela" border="1" style="margin-top:20px;">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nome</th>
+        <th>Descrição</th>
+        <th>Preço</th>
+        <th>Estoque</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    const form = document.getElementById('formBusca');
+    const tbody = document.querySelector('#tabela tbody');
+
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      const nome = document.getElementById('nome').value.trim();
+      if (!nome) return;
+
+      const res = await fetch('/api/buscar?nome=' + encodeURIComponent(nome));
+      const produtos = await res.json();
+      tbody.innerHTML = '';
+
+      if (produtos.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5">Nenhum produto encontrado.</td></tr>';
+        return;
+      }
+
+      produtos.forEach(p => {
+        tbody.innerHTML += `
+          <tr>
+            <td>${p.id}</td>
+            <td>${p.nome}</td>
+            <td>${p.descricao}</td>
+            <td>R$ ${parseFloat(p.preco).toFixed(2)}</td>
+            <td>${p.estoque}</td>
+          </tr>`;
+      });
+    });
+  </script>
+
+  <p><a href="cadastro.html">Voltar ao cadastro</a></p>
+</body>
+</html>
+

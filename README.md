@@ -1,1 +1,0 @@
-# technostore-bd2
